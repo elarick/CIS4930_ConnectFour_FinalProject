@@ -1,6 +1,6 @@
-#include "defines.h"
 #include "Connect4.h"
 #include<iostream>
+#include<vector>
 using namespace std;
 
 Connect4::Connect4()
@@ -14,6 +14,7 @@ Connect4::Connect4()
 
 void Connect4::show_grid()
 {
+	cout << "  1 2 3 4 5 6 7\n";
 	for (int i = 0; i < ROW; ++i) {
 		cout << "|";
 		for (int j = 0; j < COL; ++j) {
@@ -39,9 +40,9 @@ void Connect4::play_chip(int chip, int slot)
 {
 	while (true)
 	{
-		for (int x = 6; x >= 0; --x)
+		for (int x = 5; x >= 0; --x)
 		{
-			if (grid[x][slot - 1] == 0 && (chip == X || chip == O))
+			if (grid[x][slot - 1] == EMPTY && (chip == O || chip == X))
 			{
 				grid[x][slot - 1] = chip;
 				return;
@@ -188,7 +189,7 @@ bool Connect4::game_over()
 	bool win = false;
 
 	//Checks top row of grid. If they are all not empty, game is over
-	for (y = 0; y < 7; ++y)
+	for (y = 0; y < COL; ++y)
 	{
 		if (grid[0][y] == EMPTY)
 			break;
@@ -197,7 +198,7 @@ bool Connect4::game_over()
 	}
 
 	//Checks all columns, left to right
-	for (y = 0; y<7; ++y) {
+	for (y = 0; y<COL; ++y) {
 		for (x = 5; x>2; --x) {
 			line = grid[x][y] + grid[x - 1][y] + grid[x - 2][y] + grid[x - 3][y];
 			if (line == 4 || line == -4) {
@@ -206,7 +207,7 @@ bool Connect4::game_over()
 		}
 	}
 	//Checks all rows, top to bottom
-	for (x = 0; x<6; ++x) {
+	for (x = 0; x<ROW; ++x) {
 		for (y = 0; y<4; ++y) {
 			line = grid[x][y] + grid[x][y + 1] + grid[x][y + 2] + grid[x][y + 3];
 			if (line == 4 || line == -4) {
@@ -312,11 +313,30 @@ bool Connect4::game_over()
 	return win;
 }
 
+Connect4 & Connect4::operator=(const Connect4 &rhs)
+{
+	if (this == &rhs)
+		return *this;
+
+	int x, y;
+	for (x = 0; x < ROW; ++x)
+	{
+		for (y = 0; y < COL; ++y)
+		{
+			grid[x][y] = rhs.grid[x][y];
+		}
+	}
+	return *this;
+}
+
 void Connect4::play_game()
 {
-	int turn;
+	int turn, slot, x, y;
+	Connect4 next_move;
+	vector<Connect4> next_moves;
+
 	cout << "~~~~~****~~~~~ Welcome To A Connect Four Game! ~~~~~****~~~~~" << endl << endl
-		<< "Would you like to go first or second.  (enter 1 or 2)" << endl;
+		<< "Would you like to go first or second.  (enter 1 or 2): ";
 	cin >> turn;
 
 	while (true)
@@ -325,11 +345,17 @@ void Connect4::play_game()
 		{
 			if (!game_over())
 			{
-				//User plays chip
+				//Occasionally, a certain slot is not played
+				//Player picks
+				show_grid();
+				cout << "\nEnter slot: ";
+				cin >> slot;
+				play_chip(O, slot);
 			}
 			else {
-				cout << "\nYou Win\n";
-				return;
+				show_grid();
+				cout << "\nYou Lose\n";
+				break;
 			}
 			turn = 2;
 		}
@@ -337,11 +363,33 @@ void Connect4::play_game()
 		{
 			if (!game_over())
 			{
-				//Computer plays chip (using heuristic funciton)
+				//AI picks
+				for (y = 0; y < COL; ++y)
+				{
+					for (x = 5; x >= 0; --x)
+					{
+						if (grid[x][y] == EMPTY)
+						{
+							next_move = *this;
+							next_move.grid[x][y] = 1;
+							next_moves.push_back(next_move);
+							break;
+						}
+					}
+				}
+				next_move = next_moves.at(0);
+				for (int i = 1; i < next_moves.size(); ++i)
+				{
+					if (next_move.heuristic() < next_moves.at(i).heuristic())
+						next_move = next_moves.at(i);
+				}
+				*this = next_move;
+				cout << "\nComputer has picked a move\n\n";
 			}
 			else {
-				cout << "\nYou Lose\n";
-				return;
+				show_grid();
+				cout << "\nYou Win\n";
+				break;
 			}
 			turn = 1;
 		}
