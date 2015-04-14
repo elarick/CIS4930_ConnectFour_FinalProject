@@ -14,9 +14,9 @@ Connect4::Connect4()
 
 void Connect4::show_grid()
 {
-	cout << "  1 2 3 4 5 6 7\n";
+	cout << "\t  1 2 3 4 5 6 7\n";
 	for (int i = 0; i < ROW; ++i) {
-		cout << "|";
+		cout << "\t|";
 		for (int j = 0; j < COL; ++j) {
 			cout << " ";
 			switch (grid[i][j])
@@ -40,6 +40,12 @@ void Connect4::play_chip(int chip, int slot)
 {
 	while (true)
 	{
+		while (slot < 1 || slot > 7)
+		{
+			cout << "ERROR: Enter a valid slot (1~7)" << endl;
+			cin >> slot;
+		}
+
 		for (int x = 5; x >= 0; --x)
 		{
 			if (grid[x][slot - 1] == EMPTY && (chip == O || chip == X))
@@ -339,6 +345,12 @@ void Connect4::play_game()
 		<< "Would you like to go first or second.  (enter 1 or 2): ";
 	cin >> turn;
 
+	while (turn != 1 && turn != 2) 
+	{
+		cout << "ERROR:  Please enter \"1\" or \"2\"" << endl;
+		cin >> turn;
+	}
+
 	while (true)
 	{
 		if (turn == 1)
@@ -348,9 +360,11 @@ void Connect4::play_game()
 				//Occasionally, a certain slot is not played
 				//Player picks
 				show_grid();
+				cout << "-----------------------------------" << endl;
 				cout << "\nEnter slot: ";
 				cin >> slot;
 				play_chip(O, slot);
+				show_grid();
 			}
 			else {
 				show_grid();
@@ -392,6 +406,11 @@ void Connect4::play_game()
 				break;
 			}
 			turn = 1;
+		}
+		else
+		{
+			//default
+			turn = 1;	
 		}
 	}
 }
