@@ -385,7 +385,7 @@ void Connect4::play_game()
 						if (grid[x][y] == EMPTY)
 						{
 							next_move = *this;
-							next_move.grid[x][y] = 1;
+							next_move.grid[x][y] = X;
 							next_moves.push_back(next_move);
 							break;
 						}
