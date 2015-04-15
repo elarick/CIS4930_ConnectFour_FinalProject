@@ -9,7 +9,7 @@ class Connect4
 public:
 	Connect4();
 	void show_grid();
-	void play_chip(int chip, int slot);
+	void play_chip(int chip, char input);
 	Connect4 & Connect4::operator=(const Connect4 &rhs);
 	void play_game();
 	int heuristic();

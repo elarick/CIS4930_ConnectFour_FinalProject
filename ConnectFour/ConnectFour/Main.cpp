@@ -16,12 +16,11 @@ using namespace std;
 //Connect4 Class allows you to play against an AI
 int main(int argc, char** argv) {
 	//Implementation as a class; most of the code in Connect4.cpp
-	//X = 1 , O = -1 , EMPTY = 
+	//X = 1 , O = -1 , EMPTY = 0
 
 	Connect4 game1;
-	game1.show_grid();
-	system("PAUSE");
 	game1.play_game();
-	system("PAUSE");
+	cin.get();
+	cin.get();
 	return 0;
 }

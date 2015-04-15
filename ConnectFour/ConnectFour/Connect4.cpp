@@ -1,6 +1,7 @@
-#include "Connect4.h"
 #include<iostream>
 #include<vector>
+#include "Connect4.h"
+
 using namespace std;
 
 Connect4::Connect4()
@@ -36,15 +37,18 @@ void Connect4::show_grid()
 	cout << endl;
 }
 
-void Connect4::play_chip(int chip, int slot)
+void Connect4::play_chip(int chip, char input)
 {
+	int slot;
 	while (true)
 	{
-		while (slot < 1 || slot > 7)
+		while (input < 49 || input > 55)
 		{
 			cout << "ERROR: Enter a valid slot (1~7)" << endl;
-			cin >> slot;
+			cin >> input;
 		}
+
+		slot = (int)input - 48;
 
 		for (int x = 5; x >= 0; --x)
 		{
@@ -337,19 +341,22 @@ Connect4 & Connect4::operator=(const Connect4 &rhs)
 
 void Connect4::play_game()
 {
-	int turn, slot, x, y;
+	int  turn, x, y;
+	char input, slot;
 	Connect4 next_move;
 	vector<Connect4> next_moves;
 
 	cout << "~~~~~****~~~~~ Welcome To A Connect Four Game! ~~~~~****~~~~~" << endl << endl
 		<< "Would you like to go first or second.  (enter 1 or 2): ";
-	cin >> turn;
+	cin >> input;
 
-	while (turn != 1 && turn != 2) 
+	while (input != 49 && input != 50) //char(1) = 49 in ASCII
 	{
 		cout << "ERROR:  Please enter \"1\" or \"2\"" << endl;
-		cin >> turn;
+		cin >> input;
 	}
+
+	turn = (int)input - 48;
 
 	while (true)
 	{
@@ -364,6 +371,7 @@ void Connect4::play_game()
 				cout << "\nEnter slot: ";
 				cin >> slot;
 				play_chip(O, slot);
+				cout << endl;
 				show_grid();
 			}
 			else {
