@@ -406,6 +406,7 @@ void Connect4::play_game()
 						next_move = next_moves.at(i);
 				}
 				*this = next_move;
+				next_moves.clear();
 				cout << "\nComputer has picked a move\n\n";
 			}
 			else {
